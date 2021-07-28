@@ -1,48 +1,46 @@
-import React, { Component, Fragment } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import {connect} from 'react-redux'
-import {handleInitialData} from '../actions/shared'
-// import Dashboard from './Dashboard'
-// import NewTweet from './NewTweet'
-// import TweetPage from './TweetPage'
-// import Nav from './Nav'
-import { LoadingBar } from 'react-redux-loading'  // from react-redux-laoding to handle loader
-// import Tweet from './Tweet'
-
+import React, { Component, Fragment } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import { handleInitialData } from "../actions/shared";
+import SignIn from "./SignIn/SignIn";
+import Results from "./Results/Results";
+import Home from "./Home/Home";
+import Page404 from "./Page404/Page404";
+import LeaderBoard from "./LeaderBoard/LeaderBoard";
+import NewQuestion from "./NewQuestion/NewQuestion";
 
 class App extends Component {
-  componentDidMount(){
-    this.props.dispatch(handleInitialData())
+  componentDidMount() {
+    this.props.dispatch(handleInitialData());
   }
+
   render() {
+    const { authUser } = this.props;
     return (
-      <div>Hi there</div>
-      // <Router>
-      //    <Fragment>
-      //       <LoadingBar />
-      //       <div className="container">
-      //         <Nav />
-      //         {this.props.loading === true ? 
-      //           null 
-      //           : 
-      //           <div>
-      //             <Route path='/' exact component={Dashboard}/>
-      //             <Route path='/tweet/:id' component={TweetPage}/>
-      //             <Route path='/new' component={NewTweet}/>
-      //           </div>
-      //         }
-      //       </div>
-      //    </Fragment>
-      // </Router>
-    )
+      <Router>
+        {authUser === null || authUser === "" ? (
+          <Route render={() => <SignIn />} />
+        ) : (
+          <Fragment>
+            <div className="container">
+              <div>
+                <Route path="/" exact component={Home} />
+                <Route path="/board" component={LeaderBoard} />
+                <Route path="/new" component={NewQuestion} />
+                <Route path="/404" component={Page404} />
+                <Route path="/question/:id" component={Results} />
+              </div>
+            </div>
+          </Fragment>
+        )}
+      </Router>
+    );
   }
 }
 
-{/* <TweetPage match={{params: {id:'8xf0y6ziyjabvozdd253nd'}}}/> */}
-
-function mapStateToProps ({authUser}){
+function mapStateToProps({ authUser }) {
   return {
-      loading: authUser === null
-  }
+    authUser,
+  };
 }
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(App);
