@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import Navbar from "../Navbar/Navbar";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useLocation, useHistory } from "react-router-dom";
 import { handleAddQuestion } from "../../actions/questions";
 import { FaArrowLeft } from "react-icons/fa";
 
 function NewQuestion(props) {
+  const location = useLocation();
+  const loca = location.pathname;
+
+  const history = useHistory();
+  const loc = history.location.pathname;
+  console.log(loc);
+
   const [optionOne, setOptionOne] = useState();
   const [optionTwo, setOptionTwo] = useState();
   const [backHome, setBackHome] = useState(false);

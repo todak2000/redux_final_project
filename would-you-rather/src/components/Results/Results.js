@@ -1,13 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import { FaArrowLeft } from "react-icons/fa";
+import checker from "../../check2.png";
+import { handleAddAnswer } from "../../actions/questions";
 
 function Results(props) {
-  const { detailQuestion, id } = props;
-  if (id === "" || id === null || !detailQuestion) {
+  const { detailQuestion, id, authUserId } = props;
+  const handleAnswer = (answer, qid) => {
+    const { dispatch, authUserId } = props;
+
+    let info = {
+      authedUser: authUserId[0],
+      qid: qid,
+      answer: answer,
+    };
+    dispatch(handleAddAnswer(info));
+  };
+  if (typeof detailQuestion[0] === "undefined") {
     return <Redirect to="/404" />;
   }
 
@@ -71,13 +83,45 @@ function Results(props) {
               alt="avatar"
             />
             <div className="poll-side">
+              <h5>Would you rather ...</h5>
               <ul>
                 <li className="first-child">
-                  <p>Would you rather {detailQuestion[0].optionOne.text} </p>
+                  <button
+                    type="button"
+                    name="Option"
+                    className={
+                      detailQuestion[0].optionOne.votes.includes(authUserId[0])
+                        ? "button-disabled"
+                        : "button"
+                    }
+                    disabled={
+                      detailQuestion[0].optionOne.votes.includes(
+                        authUserId[0]
+                      ) ||
+                      detailQuestion[0].optionTwo.votes.includes(authUserId[0])
+                    }
+                    onClick={() => {
+                      handleAnswer("optionOne", detailQuestion[0].qid);
+                    }}
+                  >
+                    {detailQuestion[0].optionOne.text}{" "}
+                    <span>
+                      {detailQuestion[0].optionOne.votes.includes(
+                        authUserId[0]
+                      ) ? (
+                        <img src={checker} alt="checker" />
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </button>
+                </li>
+                <li className="first-child">
                   <span className="text-righty">
                     {totalVotes > 0 ? (
                       <span>
-                        {optionOneVotes}/ {totalVotes} voted this option
+                        {optionOneVotes}/{totalVotes} voted they would rather{" "}
+                        {detailQuestion[0].optionOne.text}
                       </span>
                     ) : (
                       <span>0 Votes</span>
@@ -97,11 +141,43 @@ function Results(props) {
                   )}
                 </li>
                 <li className="first-child">
-                  <p>Would you rather {detailQuestion[0].optionTwo.text} </p>
+                  <button
+                    type="button"
+                    name="Option"
+                    className={
+                      detailQuestion[0].optionTwo.votes.includes(authUserId[0])
+                        ? "button-disabled"
+                        : "button"
+                    }
+                    disabled={
+                      detailQuestion[0].optionTwo.votes.includes(
+                        authUserId[0]
+                      ) ||
+                      detailQuestion[0].optionOne.votes.includes(authUserId[0])
+                    }
+                    onClick={() => {
+                      handleAnswer("optionTwo", detailQuestion[0].qid);
+                    }}
+                  >
+                    {detailQuestion[0].optionTwo.text}{" "}
+                    <span>
+                      {detailQuestion[0].optionTwo.votes.includes(
+                        authUserId[0]
+                      ) ? (
+                        <img src={checker} alt="checker" />
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </button>
+                </li>
+
+                <li className="first-child">
                   <span className="text-righty">
                     {totalVotes > 0 ? (
                       <span>
-                        {optionTwoVotes}/ {totalVotes} voted this option
+                        {optionTwoVotes}/{totalVotes} voted they would rather{" "}
+                        {detailQuestion[0].optionTwo.text}
                       </span>
                     ) : (
                       <span>0 Votes</span>
@@ -129,7 +205,7 @@ function Results(props) {
   );
 }
 
-function mapStateToProps({ authUser, users, questions, dispatch }, props) {
+function mapStateToProps({ authUser, users, questions }, props) {
   const { id } = props.match.params;
   return {
     id,
@@ -170,4 +246,4 @@ function mapStateToProps({ authUser, users, questions, dispatch }, props) {
       ),
   };
 }
-export default connect(mapStateToProps)(Results);
+export default withRouter(connect(mapStateToProps)(Results));

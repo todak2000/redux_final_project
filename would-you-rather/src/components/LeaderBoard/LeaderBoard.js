@@ -1,14 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 function LeaderBoard(props) {
   const { leadersBoard } = props;
+  const location = useLocation();
+  const loca = location.pathname;
+
+  const history = useHistory();
+  const loc = history.location.pathname;
 
   return (
     <div>
       <Navbar />
-
       {Object.keys(leadersBoard)
         .sort((a, b) => leadersBoard[b].total - leadersBoard[a].total)
         .map((user, index) => (

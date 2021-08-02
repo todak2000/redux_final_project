@@ -389,6 +389,14 @@ li {
   display: flex;
   justify-content: center;
 }
+.text-middle {
+  text-align: center;
+}
+.btnn {
+  background-color: #00b5d6;
+  border: 0;
+  padding: 10px;
+}
 @media (max-width: 767px) {
   .score-div {
     width: 30%;

@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-function Page404(props) {
+function Page404() {
   const Header = () => {
     const title = "Welcome to Would You Rather App!";
-    const subTitle = "Please sign or create a new user to continue";
+    const subTitle = "Sorry! Page do not exist. ";
     return (
       <div className="header">
         <h3>{title}</h3>
@@ -17,15 +17,16 @@ function Page404(props) {
     <>
       {Header()}
       <div className="card-flexy">
-        <p>
-          Sorry! Page do not exist. Return back to <Link to="/">Home</Link>
-        </p>
+        <p className="text-middle">Return back to</p>
+        <button className="btnn">
+          <Link to="/">Home</Link>
+        </button>
       </div>
     </>
   );
 }
 
-function mapStateToProps({ authUser, users, setAuthUser }) {
+function mapStateToProps({ authUser, users }) {
   return {
     loading: authUser === null,
     authUser: Object.keys(users)

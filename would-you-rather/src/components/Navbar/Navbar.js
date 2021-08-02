@@ -1,12 +1,12 @@
-import React , {useState} from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setAuthUser } from "../../actions/authUsers";
 import { FaPowerOff } from "react-icons/fa";
 import SignIn from "../SignIn/SignIn";
 
 function Navbar(props) {
-  const [logout, setLogout] = useState(false)
+  const [logout, setLogout] = useState(false);
   const { authUser, avatar, dispatch } = props;
   if (authUser === null && logout === true) {
     return <SignIn />;
@@ -21,12 +21,12 @@ function Navbar(props) {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/new" activeClassName="active">
+            <NavLink to="/add" activeClassName="active">
               New Poll
             </NavLink>
           </li>
           <li className="space">
-            <NavLink to="/board" activeClassName="active">
+            <NavLink to="/leaderboard" activeClassName="active">
               Leader's Board
             </NavLink>
           </li>
@@ -36,7 +36,7 @@ function Navbar(props) {
           </li>
           <li
             onClick={() => {
-                setLogout(true);
+              setLogout(true);
               dispatch(setAuthUser(null));
             }}
           >
@@ -60,4 +60,4 @@ function mapStateToProps({ authUser, users, setAuthUser }) {
       .map((user) => users[user].avatarURL),
   };
 }
-export default connect(mapStateToProps)(Navbar);
+export default withRouter(connect(mapStateToProps)(Navbar));

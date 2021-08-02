@@ -1,16 +1,33 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setAuthUser } from "../../actions/authUsers";
-import { Redirect } from "react-router-dom";
+import {
+  withRouter,
+  useLocation,
+  useHistory,
+} from "react-router-dom";
 import logo from "../../logo.svg";
 
 function SignIn(props) {
-  const [user, setUser] = useState(null);
+  const [signedUser, setSignedUser] = useState(null);
   const [createUser, setCreateUser] = useState(false);
+
+  const location = useLocation();
+  const loca = location.pathname;
+
+  const history = useHistory();
+  const loc = history.location.pathname;
 
   function handleLogin() {
     const { dispatch } = props;
-    dispatch(setAuthUser(user));
+    dispatch(setAuthUser(signedUser));
+    // <Redirect
+    //   to={{
+    //     pathname: "/login",
+    //     search: "?utm=" + loc,
+    //     state: { referrer: loc },
+    //   }}
+    // />;
   }
 
   function handleChange(e) {
@@ -21,9 +38,11 @@ function SignIn(props) {
     if (e.target.value === "") {
       console.log("Kindly select a User ot Create One");
     } else {
-      setUser(e.target.value);
+      setSignedUser(e.target.value);
+      handleLogin();
     }
   }
+
   const { availableUsers } = props;
   const Header = () => {
     const title = "Welcome to Would You Rather App!";
@@ -35,9 +54,9 @@ function SignIn(props) {
       </div>
     );
   };
+
   return (
     <div className="sign-in-body">
-      {props.authUser !== null && <Redirect to="/" />}
       {Header()}
       <img src={logo} className="logo" alt="logo" />
       <h5>Sign in</h5>
@@ -51,7 +70,7 @@ function SignIn(props) {
             <option value="">Select User</option>
             <option value="newUser">Create New User</option>
             {availableUsers.map((user) => (
-              <option value={user.userId}>{user.name}</option>
+              <option value={user.userId} key={user.userId}>{user.name}</option>
             ))}
           </select>
           <br></br>
@@ -88,9 +107,9 @@ function SignIn(props) {
   );
 }
 
-export default connect(mapStateToProps)(SignIn);
+export default withRouter(connect(mapStateToProps)(SignIn));
 // function that collect data from store and maps to the dashboard component
-function mapStateToProps({ users}) {
+function mapStateToProps({ users }) {
   return {
     availableUsers: Object.keys(users).map((user) => ({
       userId: user,
